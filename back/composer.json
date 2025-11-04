@@ -1,0 +1,10 @@
+{
+    "require": {
+        "flightphp/core": "^3.17"
+    },
+    "autoload": {
+        "psr-4": {
+	    "Mp\\Controle\\": "src/"
+	}
+    }
+}
