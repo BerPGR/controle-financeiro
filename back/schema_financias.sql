@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS cards (
 CREATE TABLE IF NOT EXISTS entries (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     card_id INT NOT NULL,
-    kind ENUM('expense','investment') NOT NULL,
+    kind ENUM('EXPENSE','INVESTMENT') NOT NULL,
     description VARCHAR(255) NULL,
     amount DECIMAL(12,2) NOT NULL,
     date DATE NOT NULL,

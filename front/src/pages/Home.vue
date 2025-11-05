@@ -42,11 +42,6 @@
             </q-card>
         </div>
 
-        <div class="row items-center justify-center wrap">
-            <div>Sem coisa aqui dentro</div>
-        </div>
-
-        <!-- Dialog simples -->
         <q-dialog v-model="dialog">
             <q-card style="min-width: 320px">
                 <q-card-section class="row items-center q-gutter-sm">
@@ -59,7 +54,7 @@
                 </q-card-section>
                 <q-card-actions align="right">
                     <q-btn color="accent" label="Adicionar" />
-                    <q-btn color="negative" outlined label="Fechar" v-close-popup />
+                    <q-btn color="negative" outline label="Fechar" v-close-popup />
                 </q-card-actions>
             </q-card>
         </q-dialog>
