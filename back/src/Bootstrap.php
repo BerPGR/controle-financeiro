@@ -11,7 +11,7 @@ Flight::set('config', [
         'port' => $_ENV['DB_PORT'] ?? '3306',
         'database' => $_ENV['DB_DATABASE'] ?? 'financias',
         'username' => $_ENV['DB_USERNAME'] ?? 'root',
-        'password' => $_ENV['DB_PASSWORD'] ?? '',
+        'password' => $_ENV['DB_PASSWORD'] ?? 'MySqlUser270113!',
         'charset'  => 'utf8mb4',
         'timezone' => $_ENV['DB_TIMEZONE'] ?? '+00:00',
     ]
@@ -19,8 +19,8 @@ Flight::set('config', [
 
 Flight::before('start', function () {
     $conf = Flight::get('config');
-    header('Contant-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Orign: ', $conf['front_origin']);
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: ' . $conf['front_origin']);
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
     header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
@@ -32,13 +32,13 @@ Flight::before('start', function () {
 
 $config = Flight::get('config');
 Flight::register('db', \flight\database\PdoWrapper::class, [
-    "{$config['db']['driver']}:host={$config['db']['host']};dbname={$config['db']['database']}",
+    "{$config['db']['driver']}:host={$config['db']['host']};port={$config['db']['port']};dbname={$config['db']['database']}",
     $config['db']['username'],
     $config['db']['password'],
     [
-        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'utf8mb4\'',
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false
     ]
 ]);
 
