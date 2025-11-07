@@ -27,7 +27,8 @@
       <div class="col-12 col-md-4">
         <q-card class="bg-primary text-white">
           <q-card-section>
-            <div class="text-h6">Status</div>
+            <div class="text-h6 text-weight-bold">Status</div>
+            <div class="text-body2">Nº de Cards: {{ cards.length }}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -45,9 +46,13 @@
       >
         <q-card-section>
           <div class="row items-center justify-between">
-            <div>{{ card.name }}</div>
+            <div class="text-h5 text-weight-bold">{{ card.name }}</div>
             <q-btn flat round icon="menu">
-              <q-menu>
+              <q-menu
+                :offset="[120, 0]"
+                transition-show="jump-down"
+                transition-hide="jump-up"
+              >
                 <q-list>
                   <q-item clickable v-ripple v-close-popup>
                     <q-item-section>Editar</q-item-section>
@@ -65,57 +70,43 @@
               </q-menu>
             </q-btn>
           </div>
+          <div class="text-body1">
+            Criado em {{ formatDate(card.created_at) }}
+          </div>
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
-          <q-btn label="Acessar" color="primary" />
+          <q-btn
+            :to="`/entries/${card.id}`"
+            flat
+            label="Acessar"
+            :style="{ color: getTextColor(card.color), border: `1px solid ${getTextColor(card.color)}`, borderRadius: '5px' }"
+          />
         </q-card-actions>
       </q-card>
     </div>
 
-    <q-dialog v-model="dialog">
-      <q-card style="min-width: 480px">
-        <q-card-section>
-          <div class="row items-center q-gutter-sm">
-            <q-icon name="info" />
-            <div class="text-h6">Novo card</div>
-          </div>
-          Adicione um novo card para controlar suas financias
-        </q-card-section>
-        <q-separator />
-        <q-card-section class="q-gutter-md">
-          <q-input outlined label="Nome do card" v-model="cardName" />
-          <q-input outlined label="Cor do card" v-model="cardColor">
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-color v-model="cardColor" />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions class="q-pa-md" align="right">
-          <q-btn color="primary" label="Adicionar" @click="addCard" />
-          <q-btn color="negative" outline label="Fechar" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <QDialogCreateCard @addCard="addCard" v-model="cardForm" :dialog="dialog" />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { getCards, insertCard, type Cards } from "../api/cards";
+import QDialogCreateCard from "../components/QDialogCreateCard.vue";
+import { getTextColor } from "../util/utils";
+
+interface CardForm {
+  cardName: string;
+  cardColor: string;
+}
 
 const dialog = ref(false);
-const cardName = ref<string>("");
-const cardColor = ref<string>("");
+const cardForm = ref<CardForm>({
+  cardName: "",
+  cardColor: "",
+});
+
 const cards = ref<Cards[] | []>([]);
 
 onMounted(async () => {
@@ -136,14 +127,11 @@ const loadCards = async () => {
 };
 
 const addCard = async () => {
-  const payload = {
-    name: cardName.value,
-    color: cardColor.value,
-  };
-
   try {
-    const data = await insertCard(payload);
-    console.log("Deu certo", data);
+    const data = await insertCard({
+      name: cardForm.value.cardName,
+      color: cardForm.value.cardColor,
+    });
     dialog.value = false;
     await loadCards();
   } catch (e) {
@@ -151,13 +139,13 @@ const addCard = async () => {
   }
 };
 
-function getTextColor(hex: string) {
-  const c = hex.substring(1);
-  const rgb = parseInt(c, 16);
-  const r = (rgb >> 16) & 0xff;
-  const g = (rgb >> 8) & 0xff;
-  const b = (rgb >> 0) & 0xff;
-  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  return luminance > 186 ? "#000000" : "#FFFFFF";
-}
+const dateFormatter = Intl.DateTimeFormat("pt-BR", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+
+const formatDate = (date: Date | string) => {
+  return dateFormatter.format(new Date(date));
+};
 </script>

@@ -4,7 +4,7 @@ export interface Cards {
     id: number, 
     name: string, 
     color: string, 
-    createdAt: Date 
+    created_at: Date 
 } 
 
 export async function getCards(): Promise<Cards[]> { 
@@ -12,7 +12,6 @@ export async function getCards(): Promise<Cards[]> {
         const { data } = await http.get<Cards[]>('/api/cards') 
         return data 
     } catch (e) { 
-        console.log(e); 
         throw('Deu ruim' + e) 
     } 
 } 
