@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Financias\Model;
+namespace Mp\Controle\Model;
 
 use DateTime;
 

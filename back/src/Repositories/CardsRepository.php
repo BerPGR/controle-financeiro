@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Financias\Repositories;
+namespace Mp\Controle\Repositories;
 
 use PDO;
 

@@ -31,7 +31,7 @@ Flight::before('start', function () {
 });
 
 $config = Flight::get('config');
-Flight::register('db', \flight\database\PdoWrapper::class, [
+Flight::register('db', PDO::class, [
     "{$config['db']['driver']}:host={$config['db']['host']};port={$config['db']['port']};dbname={$config['db']['database']}",
     $config['db']['username'],
     $config['db']['password'],
@@ -57,4 +57,4 @@ Flight::map('notFound', function() {
     Flight::json(['error' => true, 'message' => 'Rota não encontrada'], 400);
 });
 
-require_once __DIR__ . '/Routes.php';
+require __DIR__ . '/Routes.php';

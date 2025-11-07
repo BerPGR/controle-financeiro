@@ -35,15 +35,40 @@
 
     <div class="text-h3 text-weight-bold q-mt-xl">Seus Cards</div>
     <div class="row wrap q-gutter-md items-center q-mt-xs">
-      <q-card v-for="card in cards" class="col-12 col-md-3 shadow-4">
+      <q-card
+        v-for="card in cards"
+        class="col-12 col-md-3 shadow-4"
+        :style="{
+          backgroundColor: card.color,
+          color: getTextColor(card.color),
+        }"
+      >
         <q-card-section>
-            <div>{{ card.id }}</div>
+          <div class="row items-center justify-between">
             <div>{{ card.name }}</div>
-            <div>{{ card.color }}</div>
+            <q-btn flat round icon="menu">
+              <q-menu>
+                <q-list>
+                  <q-item clickable v-ripple v-close-popup>
+                    <q-item-section>Editar</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="edit" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-ripple v-close-popup>
+                    <q-item-section>Apagar card</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="delete" />
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
         </q-card-section>
+        <q-separator />
         <q-card-actions align="right">
           <q-btn label="Acessar" color="primary" />
-          <q-btn outline color="negative" icon="delete" label="Deletar" />
         </q-card-actions>
       </q-card>
     </div>
@@ -76,7 +101,7 @@
         </q-card-section>
         <q-separator />
         <q-card-actions class="q-pa-md" align="right">
-          <q-btn color="primary" label="Adicionar" @click="addCard"/>
+          <q-btn color="primary" label="Adicionar" @click="addCard" />
           <q-btn color="negative" outline label="Fechar" v-close-popup />
         </q-card-actions>
       </q-card>
@@ -119,8 +144,20 @@ const addCard = async () => {
   try {
     const data = await insertCard(payload);
     console.log("Deu certo", data);
+    dialog.value = false;
+    await loadCards();
   } catch (e) {
     console.log(e);
   }
 };
+
+function getTextColor(hex: string) {
+  const c = hex.substring(1);
+  const rgb = parseInt(c, 16);
+  const r = (rgb >> 16) & 0xff;
+  const g = (rgb >> 8) & 0xff;
+  const b = (rgb >> 0) & 0xff;
+  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  return luminance > 186 ? "#000000" : "#FFFFFF";
+}
 </script>

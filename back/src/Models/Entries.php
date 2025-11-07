@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Financias\Model;
+namespace Mp\Controle\Model;
 
 use DateTime;
-use Mp\Financias\Enums\Kind;
+use Mp\Controle\Enums\Kind;
 
 class Entries {
     private int $id;

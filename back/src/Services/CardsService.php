@@ -1,7 +1,7 @@
 <?php
 
-namespace Mp\Financias\Services;
-use Mp\Financias\Repositories\CardsRepository;
+namespace Mp\Controle\Services;
+use Mp\Controle\Repositories\CardsRepository;
 use PDO;
 
 class CardsService {

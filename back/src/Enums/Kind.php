@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Financias\Enums;
+namespace Mp\Controle\Enums;
 
 enum Kind: string {
     case INVESTIMENT = 'Investimento';

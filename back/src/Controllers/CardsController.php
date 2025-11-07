@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Financias\Controllers;
+namespace Mp\Controle\Controllers;
 
 use Flight;
-use Mp\Financias\Services\CardsService;
+use Mp\Controle\Services\CardsService;
 use PDO;
 
 class CardsController
@@ -12,13 +12,18 @@ class CardsController
 
     public function index()
     {
-        $cardsService = new CardsService($this->pdo);
-        $cards = $cardsService->getAllCards();
-        Flight::json($cards, 200);
+        try {
+            $cardsService = new CardsService($this->pdo);
+            $cards = $cardsService->getAllCards();
+            Flight::json($cards, 200);
+        } catch (\Throwable $e) {
+            Flight::json($e->getMessage(),500);
+        }
     }
 
     public function insert()
-    { try {
+    {
+        try {
             $req = Flight::request();
 
             $raw = $req->getBody();
@@ -32,8 +37,7 @@ class CardsController
             $createdCard = $service->insertCard($payload);
 
             Flight::json($createdCard, 201);
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             return Flight::json(['error' => 500, 'message' => "Erro ao inserir card: {$e->getMessage()}"], 500);
         }
     }
