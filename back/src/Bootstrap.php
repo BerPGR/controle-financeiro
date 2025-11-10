@@ -4,92 +4,63 @@ use Dotenv\Dotenv;
 use Flight;
 use PDO;
 
-function get_allowed_origins_raw(): string {
-    return getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
-}
-
-/**
- * CORS — envia SEMPRE, antes de qualquer saída.
- */
-function send_cors_headers(): void {
-    // Use a env var do compose; fallback para o front local
-    $allowedOriginsRaw = get_allowed_origins_raw();
-    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
-    // Aceita lista separada por vírgulas ou um único valor.
-    $allowedOrigins = array_filter(array_map('trim', explode(',', $allowedOriginsRaw)));
-
-    // Se for usar credenciais (cookies/Authorization + withCredentials):
-    // - NUNCA use "*"
-    // - Devolva o origin exato
-    if (in_array('*', $allowedOrigins, true)) {
-        header('Access-Control-Allow-Origin: *');
-    } elseif ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
-        header("Access-Control-Allow-Origin: {$origin}");
-        header('Vary: Origin');
-    }
-
-    // Se não precisa de credenciais, pode deixar false
-    header('Access-Control-Allow-Credentials: false');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-}
-
-// Envia CORS para toda requisição
-send_cors_headers();
-
-// Responde rápido o preflight
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
-
-// --------- BOOTSTRAP ----------
-$dotenv = Dotenv::createImmutable(dirname(__DIR__)); // .env na raiz do projeto
-$dotenv->safeLoad();
+$dotend = Dotenv::createImmutable(__DIR__);
+$dotend->safeLoad();
 
 Flight::set('config', [
-    'front_origin' => get_allowed_origins_raw(),
+    'front_origin' => 'http://localhost:5173',
     'db' => [
-        'driver'   => $_ENV['DB_DRIVER']   ?? 'mysql',
-        'host'     => $_ENV['DB_HOST']     ?? '127.0.0.1',
-        'port'     => $_ENV['DB_PORT']     ?? '3306',
+        'driver' => $_ENV['DB_DRIVER'] ?? 'mysql',
+        'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',
+        'port' => $_ENV['DB_PORT'] ?? '3306',
         'database' => $_ENV['DB_DATABASE'] ?? 'financias',
         'username' => $_ENV['DB_USERNAME'] ?? 'root',
         'password' => $_ENV['DB_PASSWORD'] ?? 'MySqlUser270113!',
         'charset'  => 'utf8mb4',
         'timezone' => $_ENV['DB_TIMEZONE'] ?? '+00:00',
-    ],
+    ]
 ]);
 
-// (Opcional) garantir CORS também quando Flight trata erros / 404
-Flight::map('error', function (Throwable $e) {
-    send_cors_headers();
-    Flight::json([
-        'error'   => true,
-        'message' => $e->getMessage(),
-        'type'    => get_class($e),
-        'file'    => $e->getFile(),
-        'line'    => $e->getLine()
-    ], 500);
+Flight::before('start', function () {
+    $allowedOrigin = getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    header("Access-Control-Allow-Origin: *");
+    header('Vary: Origin');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
 });
 
-Flight::map('notFound', function () {
-    send_cors_headers();
-    Flight::json(['error' => true, 'message' => 'Rota não encontrada'], 400);
-});
-
-// DB
 $config = Flight::get('config');
 Flight::register('db', PDO::class, [
     "{$config['db']['driver']}:host={$config['db']['host']};port={$config['db']['port']};dbname={$config['db']['database']}",
     $config['db']['username'],
     $config['db']['password'],
     [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES   => false
+        PDO::ATTR_EMULATE_PREPARES => false
     ]
 ]);
+
+Flight::map('error', function (Throwable $e) {
+    $body = [
+        'error' => true,
+        'message' => $e->getMessage(),
+        'type' => get_class($e),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ];
+    Flight::json($body, 500);
+});
+
+Flight::map('notFound', function() {
+    Flight::json(['error' => true, 'message' => 'Rota não encontrada'], 400);
+});
 
 require __DIR__ . '/Routes.php';
