@@ -23,7 +23,7 @@ class CardsRepository {
             return $id;
         } catch (\Throwable $e) {
             $this->pdo->rollBack();
-            throw new \RuntimeException("Erro ao inserir: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException("Erro ao inserir: " . $e->getMessage(), 500, $e);
         }
     }
 }

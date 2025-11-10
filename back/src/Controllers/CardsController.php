@@ -17,7 +17,7 @@ class CardsController
             $cards = $cardsService->getAllCards();
             Flight::json($cards, 200);
         } catch (\Throwable $e) {
-            Flight::json($e->getMessage(),500);
+            Flight::json(['error' => $e->getMessage()],500);
         }
     }
 

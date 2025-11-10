@@ -41,7 +41,7 @@
         class="col-12 col-md-3 shadow-4"
         :style="{
           backgroundColor: card.color,
-          color: getTextColor(card.color),
+          color: getTextColorFromDB(card.color),
         }"
       >
         <q-card-section>
@@ -80,7 +80,7 @@
             :to="`/entries/${card.id}`"
             flat
             label="Acessar"
-            :style="{ color: getTextColor(card.color), border: `1px solid ${getTextColor(card.color)}`, borderRadius: '5px' }"
+            :style="{ color: getTextColorFromDB(card.color), border: `1px solid ${getTextColorFromDB(card.color)}`, borderRadius: '5px' }"
           />
         </q-card-actions>
       </q-card>
@@ -91,10 +91,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { getCards, insertCard, type Cards } from "../api/cards";
 import QDialogCreateCard from "../components/QDialogCreateCard.vue";
-import { getTextColor } from "../util/utils";
+import { getTextColor, rgbGetTextColor } from "../util/utils";
 
 interface CardForm {
   cardName: string;
@@ -148,4 +148,12 @@ const dateFormatter = Intl.DateTimeFormat("pt-BR", {
 const formatDate = (date: Date | string) => {
   return dateFormatter.format(new Date(date));
 };
+
+const getTextColorFromDB = (textColor: string) => {
+  if (textColor.startsWith('rgb')) {
+    return rgbGetTextColor(textColor)
+  } else if (textColor.startsWith("#")){
+    return getTextColor(textColor)
+  }
+}
 </script>
