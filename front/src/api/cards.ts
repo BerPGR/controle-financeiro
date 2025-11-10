@@ -1,7 +1,7 @@
 import { http } from "./http"; 
 
 export interface Cards { 
-    id: number, 
+    id: string, 
     name: string, 
     color: string, 
     created_at: Date 

@@ -1,4 +1,4 @@
-export const getTextColor = (hex: string) => {
+const getTextColor = (hex: string) => {
   const c = hex.substring(1);
   const rgb = parseInt(c, 16);
   
@@ -10,7 +10,7 @@ export const getTextColor = (hex: string) => {
   return luminance > 186 ? "#000000" : "#FFFFFF";
 };
 
-export const rgbGetTextColor = (rgb: string) => {
+const rgbGetTextColor = (rgb: string) => {
   const colors = rgb.match(/\d+/g)
   
   const r = colors![0]
@@ -18,8 +18,14 @@ export const rgbGetTextColor = (rgb: string) => {
   const b = colors![2]
 
   const luminance = 0.299 * parseInt(r) + 0.587 * parseInt(g as string) + 0.114 * parseInt(b as string);
-  console.log(luminance);
-  console.log(luminance > 186);
 
   return luminance > 186 ? "#000000" : "#FFFFFF";
+}
+
+export const getTextColorFromDB = (textColor: string) => {
+  if (textColor.startsWith('rgb')) {
+    return rgbGetTextColor(textColor)
+  } else if (textColor.startsWith("#")){
+    return getTextColor(textColor)
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="props.dialog">
+  <q-dialog v-model="dialogModel">
     <q-card style="min-width: 480px">
       <q-card-section>
         <div class="row items-center q-gutter-sm">
@@ -43,11 +43,10 @@ const form = defineModel<{
     required: true
 })
 
+const dialogModel = defineModel<boolean>('dialog')
+
 const emit = defineEmits<{
     (e: 'addCard'): void
 }>()
 
-const props = defineProps<{
-    dialog: boolean
-}>()
 </script>

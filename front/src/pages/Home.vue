@@ -77,7 +77,7 @@
         <q-separator />
         <q-card-actions align="right">
           <q-btn
-            :to="`/entries/${card.id}`"
+            @click="goToEntriesPage(card)"
             flat
             label="Acessar"
             :style="{ color: getTextColorFromDB(card.color), border: `1px solid ${getTextColorFromDB(card.color)}`, borderRadius: '5px' }"
@@ -86,21 +86,25 @@
       </q-card>
     </div>
 
-    <QDialogCreateCard @addCard="addCard" v-model="cardForm" :dialog="dialog" />
+    <QDialogCreateCard @addCard="addCard" v-model="cardForm" v-model:dialog="dialog" />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { getCards, insertCard, type Cards } from "../api/cards";
 import QDialogCreateCard from "../components/QDialogCreateCard.vue";
-import { getTextColor, rgbGetTextColor } from "../util/utils";
+import { getTextColorFromDB } from "../util/utils";
+import { useCardStore } from "../store/cardStore";
+import { useRouter } from "vue-router";
 
 interface CardForm {
   cardName: string;
   cardColor: string;
 }
 
+const { setCardData } = useCardStore()
+const router = useRouter()
 const dialog = ref(false);
 const cardForm = ref<CardForm>({
   cardName: "",
@@ -139,6 +143,11 @@ const addCard = async () => {
   }
 };
 
+const goToEntriesPage = async (card: Cards) => {
+  await setCardData(card.id, card.name, card.color)
+  router.push(`/entries/${card.id}`)
+}
+
 const dateFormatter = Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
   month: "2-digit",
@@ -148,12 +157,4 @@ const dateFormatter = Intl.DateTimeFormat("pt-BR", {
 const formatDate = (date: Date | string) => {
   return dateFormatter.format(new Date(date));
 };
-
-const getTextColorFromDB = (textColor: string) => {
-  if (textColor.startsWith('rgb')) {
-    return rgbGetTextColor(textColor)
-  } else if (textColor.startsWith("#")){
-    return getTextColor(textColor)
-  }
-}
 </script>
