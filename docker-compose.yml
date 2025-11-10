@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment: 
+      HOST: 0.0.0.0
+      PORT: 5173
+    depends_on:
+      - back
+    networks:
+      - appnet
+  
+  back: 
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_DRIVER: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: financias
+      DB_USERNAME: root
+      DB_PASSWORD: MySqlUser270113!
+      DB_TIMEZONE: "+00:00"
+      FRONT_ORIGIN: "http://localhost:5173"
+    depends_on:
+      - db
+    networks:
+      - appnet
+
+  db:
+    image: mysql:8.4
+    container_name: mysql_db
+    environment: 
+      MYSQL_ROOT_PASSWORD: MySqlUser270113!
+      MYSQL_DATABASE: financias
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    networks:
+      - appnet
+
+volumes:
+  mysqldata: {}
+
+networks:
+  appnet:
+    driver: bridge
