@@ -4,19 +4,28 @@ use Dotenv\Dotenv;
 use Flight;
 use PDO;
 
+function get_allowed_origins_raw(): string {
+    return getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
+}
+
 /**
  * CORS — envia SEMPRE, antes de qualquer saída.
  */
 function send_cors_headers(): void {
     // Use a env var do compose; fallback para o front local
-    $allowedOrigin = getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
+    $allowedOriginsRaw = get_allowed_origins_raw();
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+    // Aceita lista separada por vírgulas ou um único valor.
+    $allowedOrigins = array_filter(array_map('trim', explode(',', $allowedOriginsRaw)));
 
     // Se for usar credenciais (cookies/Authorization + withCredentials):
     // - NUNCA use "*"
     // - Devolva o origin exato
-    if ($allowedOrigin === '*' || $origin === $allowedOrigin) {
-        header("Access-Control-Allow-Origin: " . ($allowedOrigin === '*' ? '*' : $origin));
+    if (in_array('*', $allowedOrigins, true)) {
+        header('Access-Control-Allow-Origin: *');
+    } elseif ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
+        header("Access-Control-Allow-Origin: {$origin}");
         header('Vary: Origin');
     }
 
@@ -40,7 +49,7 @@ $dotenv = Dotenv::createImmutable(dirname(__DIR__)); // .env na raiz do projeto
 $dotenv->safeLoad();
 
 Flight::set('config', [
-    'front_origin' => getenv('FRONT_ORIGIN') ?: 'http://localhost:5173',
+    'front_origin' => get_allowed_origins_raw(),
     'db' => [
         'driver'   => $_ENV['DB_DRIVER']   ?? 'mysql',
         'host'     => $_ENV['DB_HOST']     ?? '127.0.0.1',
