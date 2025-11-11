@@ -1,11 +1,7 @@
-FROM php:8.4-cli
+# Usa a imagem oficial do PHP com Apache
+FROM php:8.4-apache
 
-#RUN apt-get update && apt-get install -y --no-install-recommends \
-#        git unzip libpq-dev libzip-dev \
-#    && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
-#    && a2enmod rewrite \
-#    && rm -rf /var/lib/apt/lists/*
-
+# Instalação das dependências e extensões
 RUN apt-get update && apt-get install -y --no-install-recommends \
       git unzip libzip-dev \
   && docker-php-ext-install pdo pdo_mysql \
@@ -13,22 +9,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && docker-php-ext-install zip \
   && rm -rf /var/lib/apt/lists/*
 
+# Habilita o módulo rewrite do Apache (essencial para o roteamento do .htaccess)
+RUN a2enmod rewrite
 
-#ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-#RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
-#    sed -ri -e 's!Directory /var/www/!Directory ${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
-
+# Define o diretório de trabalho
 WORKDIR /var/www/html
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Copia e instala o Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock* ./
 RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts
 
+# Copia todos os arquivos da aplicação (incluindo o novo CorsUtil.php e o .htaccess simplificado)
 COPY . .
 
 RUN composer dump-autoload --optimize
 
-#RUN chown -R www-data:www-data /var/www/html
+# Copia e aplica a configuração customizada do VirtualHost (MUITO IMPORTANTE!)
+# Esta linha define public/ como DocumentRoot, resolvendo o 404 anterior
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-EXPOSE 8080
-CMD ["php", "-S", "0.0.0.0:8080", "public/index.php"]
+# Certifica-se que o Apache tem permissões
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 80
+# CMD padrão da imagem PHP/Apache (não é necessário especificar)

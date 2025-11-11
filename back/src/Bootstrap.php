@@ -1,12 +1,14 @@
 <?php
 
 use Dotenv\Dotenv;
-use Flight;
+use Mp\Controle\utils\CorsUtil;
 use Mp\Controle\DInjection;
-use PDO;
 
 $dotend = Dotenv::createImmutable(__DIR__);
 $dotend->safeLoad();
+
+$CorsUtil = new CorsUtil();
+Flight::before('start', [$CorsUtil, 'handleCors']);
 
 Flight::set('config', [
     'front_origin' => 'http://localhost:5173',
@@ -35,19 +37,12 @@ Flight::register('db', PDO::class, [
 ]);
 
 Flight::before('start', function () use ($config) {
-    $allowedOrigin = getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
-    header("Access-Control-Allow-Origin: {$allowedOrigin}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        http_response_code(204);
-        exit;
-    }
     DInjection::inject($config);
 });
 
 Flight::map('error', function (Throwable $e) {
+    Flight::response()->header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    Flight::response()->header('Access-Control-Allow-Credentials', 'true');
     $body = [
         'error' => true,
         'message' => $e->getMessage(),
@@ -58,7 +53,7 @@ Flight::map('error', function (Throwable $e) {
     Flight::json($body, 500);
 });
 
-Flight::map('notFound', function() {
+Flight::map('notFound', function () {
     Flight::json(['error' => true, 'message' => 'Rota não encontrada'], 400);
 });
 

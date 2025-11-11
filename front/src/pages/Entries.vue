@@ -126,7 +126,7 @@ const columns = ref<QTableColumn[]>([
     field: "description",
   },
   { name: "date", label: "Data", align: "left", field: "date" },
-  { name: "amount", label: "Total", align: "right", field: "amount" },
+  { name: "amount", label: "Total", align: "right", field: "amount", format: (val: number) => formattedValue(val) },
 ]);
 
 const totalExpenses = computed(() => {

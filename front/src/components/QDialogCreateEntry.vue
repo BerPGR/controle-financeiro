@@ -51,7 +51,7 @@
       </q-card-section>
       <q-separator />
       <q-card-actions class="q-pa-md" align="right">
-        <q-btn color="primary" label="Adicionar" @click="emits('addEntry')" />
+        <q-btn color="primary" label="Adicionar" @click="emits('addEntry', props.cardId)" />
         <q-btn color="negative" outline label="Fechar" v-close-popup />
       </q-card-actions>
     </q-card>
@@ -62,7 +62,7 @@
 import type { CreateEntryKind } from '../types/types.ts'
 
 const emits = defineEmits<{
-  (e: "addEntry"): void;
+  (e: "addEntry", id: string): void;
 }>();
 
 const dialogModel = defineModel<boolean>("dialog");
@@ -77,6 +77,10 @@ const form = defineModel<{
   type: Object,
   required: true,
 });
+
+const props = defineProps<{
+  cardId: string
+}>()
 
 const options: CreateEntryKind[] = [
   {

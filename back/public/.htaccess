@@ -1,0 +1,17 @@
+# Habilita a reescrita de URLs
+RewriteEngine On
+
+# ----------------------------------------------------
+# 1. TRATAMENTO CORS (REMOVIDO DO APACHE - AGORA NO PHP)
+# ----------------------------------------------------
+
+# ----------------------------------------------------
+# 2. ROTEAMENTO (REWRITE) para Flight
+# ----------------------------------------------------
+
+# Se o recurso requisitado não for um arquivo existente no sistema de arquivos
+RewriteCond %{REQUEST_FILENAME} !-f
+# Se o recurso requisitado não for um diretório existente
+RewriteCond %{REQUEST_FILENAME} !-d
+# Redireciona a requisição para o index.php
+RewriteRule ^ index.php [L]

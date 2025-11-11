@@ -11,16 +11,16 @@ services:
       HOST: 0.0.0.0
       PORT: 5173
     depends_on:
-      - back
+      - php
     networks:
       - appnet
   
-  back: 
+  php: 
     build:
       context: ./back
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:80"
     environment:
       DB_DRIVER: mysql
       DB_HOST: db
