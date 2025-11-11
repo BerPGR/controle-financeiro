@@ -18,9 +18,9 @@ export async function getEntriesFromCard(id: string): Promise<Entries[]> {
     }
 }
 
-export async function insertEntryInCard(id: string) {
+export async function insertEntryInCard(id: string, payload: {kind: string, amount: number, description: string, category: string, date: string}) {
     try {
-        const { data } = await http.post<Entries>(`/api/cards/${id}/entries`)
+        const { data } = await http.post<Entries>(`/api/cards/${id}/entries`, payload)
         return data
     } catch (e) {
         throw('Erro ao inserir entry para esse card: ' + e)

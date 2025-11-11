@@ -29,3 +29,12 @@ export const getTextColorFromDB = (textColor: string) => {
     return getTextColor(textColor)
   }
 }
+
+const formatter = Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+export const formattedValue = (value: number) => {
+  return formatter.format(value);
+};
