@@ -14,6 +14,10 @@ class ComposerStaticInitd61a0cb6fcf6ab3ffe7746c206409094
     );
 
     public static $prefixLengthsPsr4 = array (
+        'f' => 
+        array (
+            'flight\\' => 7,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
@@ -22,6 +26,7 @@ class ComposerStaticInitd61a0cb6fcf6ab3ffe7746c206409094
         ),
         'P' => 
         array (
+            'Psr\\Container\\' => 14,
             'PhpOption\\' => 10,
         ),
         'M' => 
@@ -39,6 +44,10 @@ class ComposerStaticInitd61a0cb6fcf6ab3ffe7746c206409094
     );
 
     public static $prefixDirsPsr4 = array (
+        'flight\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/flightphp/container/src',
+        ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
@@ -50,6 +59,10 @@ class ComposerStaticInitd61a0cb6fcf6ab3ffe7746c206409094
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'PhpOption\\' => 
         array (

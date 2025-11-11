@@ -2,6 +2,7 @@
 
 use Dotenv\Dotenv;
 use Flight;
+use Mp\Controle\DInjection;
 use PDO;
 
 $dotend = Dotenv::createImmutable(__DIR__);
@@ -21,21 +22,6 @@ Flight::set('config', [
     ]
 ]);
 
-Flight::before('start', function () {
-    $allowedOrigin = getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
-    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-    header("Access-Control-Allow-Origin: *");
-    header('Vary: Origin');
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        http_response_code(204);
-        exit;
-    }
-});
-
 $config = Flight::get('config');
 Flight::register('db', PDO::class, [
     "{$config['db']['driver']}:host={$config['db']['host']};port={$config['db']['port']};dbname={$config['db']['database']}",
@@ -47,6 +33,20 @@ Flight::register('db', PDO::class, [
         PDO::ATTR_EMULATE_PREPARES => false
     ]
 ]);
+
+Flight::before('start', function () use ($config) {
+    $allowedOrigin = getenv('FRONT_ORIGIN') ?: 'http://localhost:5173';
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    header("Access-Control-Allow-Origin: {$origin}");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+    DInjection::inject($config);
+});
 
 Flight::map('error', function (Throwable $e) {
     $body = [
