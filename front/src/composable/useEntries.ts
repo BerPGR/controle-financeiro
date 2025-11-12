@@ -17,7 +17,6 @@ export default function useEntries() {
     description: string;
     amount: number;
     date: string;
-    category: string;
   }
 
   const form = ref<EntryForm>({
@@ -28,7 +27,6 @@ export default function useEntries() {
     description: "",
     amount: 0,
     date: `${new Date().getDate}/${new Date().getMonth}/${new Date().getMonth}`,
-    category: "",
   });
 
   const loadEntries = async (cardId: string) => {
@@ -50,7 +48,6 @@ export default function useEntries() {
         kind: form.value.kind.value,
         amount: form.value.amount,
         description: form.value.description,
-        category: form.value.category,
         date: form.value.date,
       });
       dialog.value = false;

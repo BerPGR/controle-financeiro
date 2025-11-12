@@ -30,7 +30,6 @@
           label="Descrição"
           v-model="form.description"
         />
-        <q-input outlined clearable label="Nome" v-model="form.category" />
         <q-input outlined v-model="form.date" mask="date" :rules="['date']" label="Data">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -72,7 +71,6 @@ const form = defineModel<{
   description: string;
   amount: number;
   date: string;
-  category: string;
 }>({
   type: Object,
   required: true,

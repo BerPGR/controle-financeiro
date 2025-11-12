@@ -6,7 +6,6 @@ export interface Entries {
     description: string,
     amount: number,
     date: Date,
-    category: string
 }
 
 export async function getEntriesFromCard(id: string): Promise<Entries[]> {
@@ -18,7 +17,7 @@ export async function getEntriesFromCard(id: string): Promise<Entries[]> {
     }
 }
 
-export async function insertEntryInCard(id: string, payload: {kind: string, amount: number, description: string, category: string, date: string}) {
+export async function insertEntryInCard(id: string, payload: {kind: string, amount: number, description: string, date: string}) {
     try {
         const { data } = await http.post<Entries>(`/api/cards/${id}/entries`, payload)
         return data

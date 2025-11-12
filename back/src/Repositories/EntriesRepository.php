@@ -10,7 +10,7 @@ class EntriesRepository
 
     public function getAllFromCardId(string $cardId)
     {
-        $sql = "SELECT id, kind, description, amount, date, category FROM entries where card_id = $cardId";
+        $sql = "SELECT id, kind, description, amount, date FROM entries where card_id = $cardId";
         $stmt = $this->pdo->query($sql);
         $rows = $stmt->fetchAll();
         return $rows;
@@ -20,7 +20,7 @@ class EntriesRepository
     {
         $this->pdo->beginTransaction();
         try {
-            $sql = "INSERT INTO entries (card_id, kind, description, amount, date, category) VALUES (:card_id, :kind, :description, :amount, :date, :category);";
+            $sql = "INSERT INTO entries (card_id, kind, description, amount, date) VALUES (:card_id, :kind, :description, :amount, :date);";
             $stmt = $this->pdo->prepare($sql);
             $ok = $stmt->execute(
                 [
@@ -29,7 +29,6 @@ class EntriesRepository
                     ":description" => $payload['description'],
                     ":amount" => $payload['amount'],
                     ":date" => $payload['date'],
-                    ":category" => $payload['category']
                 ]
             );
             if ($ok) {
