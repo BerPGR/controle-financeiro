@@ -4,17 +4,15 @@ namespace Mp\Controle\Controllers;
 
 use Flight;
 use Mp\Controle\Services\CardsService;
-use PDO;
 
 class CardsController
 {
-    public function __construct(private PDO $pdo) {}
+    public function __construct(private CardsService $service) {}
 
     public function index()
     {
         try {
-            $cardsService = new CardsService($this->pdo);
-            $cards = $cardsService->getAllCards();
+            $cards = $this->service->getAllCards();
             Flight::json($cards, 200);
         } catch (\Throwable $e) {
             Flight::json($e->getMessage(), 500);
@@ -33,8 +31,7 @@ class CardsController
                 $payload = $req->data ? $req->data->getData() : [];
             }
 
-            $service = new CardsService($this->pdo);
-            $createdCard = $service->insertCard($payload);
+            $createdCard = $this->service->insertCard($payload);
 
             Flight::json($createdCard, 201);
         } catch (\Throwable $e) {
@@ -48,12 +45,20 @@ class CardsController
             $req = Flight::request();
             $payload = $req->data->getData();
 
-            $service = new CardsService($this->pdo);
-            $data = $service->updateCard($id, $payload);
+            $data = $this->service->updateCard($id, $payload);
 
             Flight::json($data, 204);
         } catch (\Throwable $e) {
             return Flight::json($e->getMessage(), 500);
+        }
+    }
+
+    public function delete(int $id) {
+        try {
+            $data = $this->service->deleteCard($id);
+            Flight::json($data,204);
+        } catch (\Throwable $e) {
+            Flight::json(['status' => 500, 'message' => 'Erro ao deletar card: ' . $e->getMessage()], 500);
         }
     }
 }

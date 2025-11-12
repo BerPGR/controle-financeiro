@@ -21,7 +21,12 @@ export async function insertCard(payload: { name: string, color: string }) {
     return data 
 }
 
-export async function updateCard(cardId: number, payload: {name: string, color: string}) {
+export async function updateCard(cardId: string, payload: {name: string, color: string}) {
     const data = await http.put(`/api/cards/${cardId}`, payload)
+    return data
+}
+
+export async function deleteCardById(cardId: string) {
+    const { data } = await http.delete(`/api/cards/${cardId}`)
     return data
 }

@@ -39,4 +39,15 @@ class CardsRepository {
             throw new RuntimeException("Erro ao atualizar card" . $e->getMessage());
         }
     }
+
+    public function delete(int $id): array {
+        try {
+            $sql = "DELETE FROM cards WHERE id = :id;";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return ['status'=> 204, 'message'=> 'Sucesso ao deletar card!'];
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Erro ao deletar card: '. $e->getMessage());
+        }
+    }
 }

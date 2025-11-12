@@ -60,7 +60,7 @@
                       <q-icon name="edit" />
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-ripple v-close-popup>
+                  <q-item clickable v-ripple v-close-popup @click="openDeleteDialog(card.id)">
                     <q-item-section>Apagar card</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="delete" />
@@ -97,11 +97,13 @@
     />
 
     <QDialogEditCard @editCard="editCard(selectedCard.id)" v-model="selectedCard" v-model:dialog="editDialog"/>
+
+    <QDialogDeleteCard @deleteCard="deleteCard(idCardDelete)" :id="idCardDelete" v-model:dialog="deleteDialog"/>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import QDialogCreateCard from "../components/QDialogCreateCard.vue";
 import { getTextColorFromDB } from "../util/utils";
 import { useCardStore } from "../store/cardStore";
@@ -109,10 +111,13 @@ import { useRouter } from "vue-router";
 import type { Cards } from "../api/cards";
 import useCards from "../composable/useCards";
 import QDialogEditCard from "../components/QDialogEditCard.vue";
+import QDialogDeleteCard from "../components/QDialogDeleteCard.vue";
 
 const router = useRouter()
-const { loadCards, addCard, editCard, selectedCard, selectCard, cardForm, cards, dialog, editDialog } = useCards()
+const { loadCards, addCard, editCard, selectCard, deleteCard, selectedCard, cardForm, cards, dialog, editDialog, deleteDialog } = useCards()
 const { setCardData } = useCardStore();
+
+const idCardDelete = ref("")
 
 onMounted(async () => {
   await loadCards();
@@ -132,4 +137,9 @@ const dateFormatter = Intl.DateTimeFormat("pt-BR", {
 const formatDate = (date: Date | string) => {
   return dateFormatter.format(new Date(date));
 };
+
+const openDeleteDialog = (id: string) => {
+  idCardDelete.value = id
+  deleteDialog.value = true
+}
 </script>

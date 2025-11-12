@@ -1,9 +1,10 @@
 import { ref } from "vue";
-import { getCards, insertCard, updateCard, type Cards } from "../api/cards";
+import { getCards, insertCard, updateCard, deleteCardById, type Cards } from "../api/cards";
 
 export default function useCards() {
   const cards = ref<Cards[] | []>([]);
   const editDialog = ref<boolean>(false)
+  const deleteDialog = ref<boolean>(false)
   const dialog = ref<boolean>(false);
   
   interface CardForm {
@@ -68,5 +69,15 @@ export default function useCards() {
     }
   }
 
-  return { loadCards, addCard, editCard, selectCard, selectedCard, cards, dialog, editDialog, cardForm};
+  const deleteCard = async (cardId: string) => {
+    try {
+      const data = await deleteCardById(cardId)
+      deleteDialog.value = false
+      await loadCards()
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return { loadCards, addCard, editCard, selectCard, deleteCard, selectedCard, cards, dialog, editDialog, deleteDialog, cardForm};
 }
