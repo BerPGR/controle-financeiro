@@ -87,7 +87,7 @@
           color="negative"
           round
           flat
-          @click="deleteEntry(selected)"
+          @click="deleteEntry(selected, cardId)"
         />
       </template>
       <template v-slot:body-cell-amount="props">
@@ -124,7 +124,7 @@ const route = useRoute();
 const router = useRouter();
 const { getCardDataFromStorage } = useCardStore();
 
-const selected = ref([{}]);
+const selected = ref([]);
 const cardId = route.params.id as string;
 const card = ref<Omit<Cards, "created_at"> | null>();
 const { entries, dialog, form, loadEntries, addNewEntry, deleteEntry } = useEntries();

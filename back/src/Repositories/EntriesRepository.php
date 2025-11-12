@@ -42,4 +42,23 @@ class EntriesRepository
             throw new \RuntimeException("Erro ao inserir: " . $e->getMessage() . $e->getLine(), 500, $e);
         }
     }
+
+    public function deleteEntryById($id) {
+        $this->pdo->beginTransaction();
+        try {
+            $sql = "DELETE FROM entries WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $ok = $stmt->execute([':id' => $id]);
+    
+            if ($ok) {
+                $this->pdo->commit();
+            }
+
+            return ['status' => 204, 'message' => 'Registro deletado com sucesso'];
+        }
+        catch (\Throwable $e) {
+            $this->pdo->rollBack();
+            throw new \RuntimeException('Falha ao deletar registro: '. $e->getMessage());
+        }
+    }
 }

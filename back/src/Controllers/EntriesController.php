@@ -36,4 +36,15 @@ class EntriesController {
             Flight::json(['error'=> $e->getMessage()], 500);
         }
     }
+
+    public function delete($id) {
+        try {
+            $data = $this->service->deleteEntry($id);
+            if ($data['status'] === 204) {
+                Flight::json($data,200);
+            }
+        } catch (\Throwable $e) {
+            Flight::json(['status' => 500, 'message' => 'Erro ao deletar registro: ' . $e->getMessage()], 500);
+        }
+    }
 }

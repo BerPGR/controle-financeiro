@@ -1,6 +1,12 @@
 import { ref } from "vue";
-import { type Entries, getEntriesFromCard, insertEntryInCard, deleteEntryById } from "../api/entries";
+import {
+  type Entries,
+  getEntriesFromCard,
+  insertEntryInCard,
+  deleteEntryById,
+} from "../api/entries";
 import type { CreateEntryKind } from "../types/types";
+import { notify } from "../util/utils";
 
 export default function useEntries() {
   const entries = ref<Entries[] | []>([]);
@@ -54,14 +60,22 @@ export default function useEntries() {
     }
   };
 
-  const deleteEntry = async (entry: object[]) => {
+  const deleteEntry = async (entry: object[], cardId: string) => {
     try {
-      const convertEntry = entry[0] as Entries
-      await deleteEntryById(convertEntry.id)
+      if (entry.length === 0) {
+        notify("Não é possível deletar registro nenhum!", "negative", "error");
+        return;
+      }
+      const convertEntry = entry[0] as Entries;
+      const data = await deleteEntryById(convertEntry.id);
+      if (data.status === 204) {
+        notify(data.message, "primary", "check");
+        await loadEntries(cardId);
+      }
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   return { loadEntries, addNewEntry, deleteEntry, entries, dialog, form };
 }

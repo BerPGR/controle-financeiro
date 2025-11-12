@@ -29,7 +29,8 @@ export async function insertEntryInCard(id: string, payload: {kind: string, amou
 
 export async function deleteEntryById(id: number) {
     try {
-        await http.delete<Entries>(`/api/entries/${id}`)
+        const { data } = await http.delete(`/api/entries/${id}`)
+        return data
     } catch (e) {
         console.log(e);
     }

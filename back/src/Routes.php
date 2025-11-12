@@ -11,3 +11,5 @@ Flight::route('POST /api/cards', [CardsController::class, 'insert']);
 Flight::route('GET /api/cards/@cardId/entries', [EntriesController::class, 'index']);
 
 Flight::route('POST /api/cards/@cardId/entries', [EntriesController::class, 'insert']);
+
+Flight::route('DELETE /api/entries/@id', [EntriesController::class, 'delete']);

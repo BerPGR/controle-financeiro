@@ -14,4 +14,8 @@ class EntriesService {
     public function createEntry($cardId, $payload) {
         return $this->repository->createEntry($cardId, $payload);
     }
+
+    public function deleteEntry($id) {
+        return $this->repository->deleteEntryById($id);
+    }
 }

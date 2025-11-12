@@ -1,4 +1,4 @@
-import { useQuasar } from "quasar";
+import { Notify } from 'quasar'
 
 const getTextColor = (hex: string) => {
   const c = hex.substring(1);
@@ -45,8 +45,7 @@ export const formattedValue = (value: number) => {
 };
 
 export const notify = (message: string, color: string, icon: string) => {
-  const $q = useQuasar();
-  $q.notify({
+  Notify.create({
     icon,
     color,
     multiLine: true,
