@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CreateEntryKind } from '../types/types.ts'
+import type { CreateEntryKind } from '../../types/types.ts'
 
 const emits = defineEmits<{
   (e: "addEntry", id: string): void;

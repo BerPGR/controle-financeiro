@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $sql = "
 USE financias;
@@ -22,6 +22,14 @@ CREATE TABLE IF NOT EXISTS entries (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_entries_card FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE 
 );
+
+CREATE TABLE IF NOT EXISTS income (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    value DECIMAL(12, 2) NOT NULL,
+    date DATE NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 ";
 
 // Como o Flight::register('db', PDO::class, ...) ainda não foi injetado (está no before('start')),
@@ -30,7 +38,7 @@ CREATE TABLE IF NOT EXISTS entries (
 try {
     // Acessa as configurações de DB
     $config = Flight::get('config')['db'];
-    
+
     // Cria a string DSN (Data Source Name)
     $dsn = "{$config['driver']}:host={$config['host']};port={$config['port']};dbname={$config['database']}";
 
@@ -48,7 +56,6 @@ try {
     // Se o banco de dados não estiver pronto ou as credenciais estiverem erradas.
     // Lembre-se: o host é 'db' e a porta é '3306' de dentro do contêiner.
     die("❌ Erro ao criar tabelas: " . $e->getMessage() . "\n");
-
 } catch (\Throwable $e) {
     die("❌ Erro de inicialização: " . $e->getMessage() . "\n");
 }

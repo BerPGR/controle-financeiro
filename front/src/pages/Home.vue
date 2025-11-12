@@ -24,13 +24,26 @@
         </q-card>
       </div>
 
-      <div class="col-12 col-md-4">
-        <q-card class="bg-primary text-white">
-          <q-card-section>
-            <div class="text-h6 text-weight-bold">Status</div>
-            <div class="text-body2">Nº de Cards: {{ cards.length }}</div>
-          </q-card-section>
-        </q-card>
+      <div class="col-12 col-md-4 q-gutter-md">
+        <div>
+          <q-card class="bg-primary text-white">
+            <q-card-section>
+              <div class="text-h6 text-weight-bold">Status</div>
+              <div class="text-body1">Nº de Cards: {{ cards.length }}</div>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div>
+          <q-card class="bg-primary text-white">
+            <q-card-section>
+              <div class="row items-center justify-between">
+                <div class="text-h6 text-weight-bold">Total recebido neste mês</div>
+                <q-btn round flat icon="add" @click="incomeDialog = true"/>
+              </div>
+              <div class="text-body1">{{  formattedValue(monthlyIncome) }}</div>
+            </q-card-section>
+          </q-card>
+        </div>
       </div>
     </div>
 
@@ -99,28 +112,34 @@
     <QDialogEditCard @editCard="editCard(selectedCard.id)" v-model="selectedCard" v-model:dialog="editDialog"/>
 
     <QDialogDeleteCard @deleteCard="deleteCard(idCardDelete)" :id="idCardDelete" v-model:dialog="deleteDialog"/>
+
+    <QDialogInsertIncome @insertNewIncome="newIncome" v-model:dialog="incomeDialog" v-model="incomeForm"/>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import QDialogCreateCard from "../components/QDialogCreateCard.vue";
-import { getTextColorFromDB } from "../util/utils";
+import QDialogCreateCard from "../components/Dialog/QDialogCreateCard.vue";
+import { formattedValue, getTextColorFromDB } from "../util/utils";
 import { useCardStore } from "../store/cardStore";
 import { useRouter } from "vue-router";
 import type { Cards } from "../api/cards";
 import useCards from "../composable/useCards";
-import QDialogEditCard from "../components/QDialogEditCard.vue";
-import QDialogDeleteCard from "../components/QDialogDeleteCard.vue";
+import QDialogEditCard from "../components/Dialog/QDialogEditCard.vue";
+import QDialogDeleteCard from "../components/Dialog/QDialogDeleteCard.vue";
+import useIncome from "../composable/useIncome";
+import QDialogInsertIncome from "../components/Dialog/QDialogInsertIncome.vue";
 
 const router = useRouter()
 const { loadCards, addCard, editCard, selectCard, deleteCard, selectedCard, cardForm, cards, dialog, editDialog, deleteDialog } = useCards()
+const {incomeForm, loadIncome, monthlyIncome, newIncome, incomeDialog} = useIncome()
 const { setCardData } = useCardStore();
 
 const idCardDelete = ref("")
 
 onMounted(async () => {
   await loadCards();
+  await loadIncome();
 });
 
 const goToEntriesPage = async (card: Cards) => {

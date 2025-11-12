@@ -6,8 +6,10 @@ use Flight;
 use flight\Container;
 use Mp\Controle\Repositories\CardsRepository;
 use Mp\Controle\Repositories\EntriesRepository;
+use Mp\Controle\Repositories\IncomeRepository;
 use Mp\Controle\Services\CardsService;
 use Mp\Controle\Services\EntriesService;
+use Mp\Controle\Services\IncomeService;
 use PDO;
 
 class DInjection
@@ -30,6 +32,8 @@ class DInjection
         $container->set(EntriesRepository::class, EntriesRepository::class);
         $container->set(CardsService::class, CardsService::class);
         $container->set(CardsRepository::class, CardsRepository::class);
+        $container->set(IncomeService::class, IncomeService::class);
+        $container->set(IncomeRepository::class, IncomeRepository::class);
 
         Flight::registerContainerHandler([$container, 'get']);
     }

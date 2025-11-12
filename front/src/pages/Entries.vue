@@ -117,7 +117,7 @@ import { formattedValue, getTextColorFromDB } from "../util/utils";
 import { useCardStore } from "../store/cardStore";
 import type { Cards } from "../api/cards";
 import type { QTableColumn } from "quasar";
-import QDialogCreateEntry from "../components/QDialogCreateEntry.vue";
+import QDialogCreateEntry from "../components/Dialog/QDialogCreateEntry.vue";
 import useEntries from "../composable/useEntries";
 
 const route = useRoute();
