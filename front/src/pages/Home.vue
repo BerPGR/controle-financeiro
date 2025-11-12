@@ -54,7 +54,7 @@
                 transition-hide="jump-up"
               >
                 <q-list>
-                  <q-item clickable v-ripple v-close-popup>
+                  <q-item clickable v-ripple v-close-popup @click="selectCard(card.id, card.name, card.color)">
                     <q-item-section>Editar</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="edit" />
@@ -80,73 +80,48 @@
             @click="goToEntriesPage(card)"
             flat
             label="Acessar"
-            :style="{ color: getTextColorFromDB(card.color), border: `1px solid ${getTextColorFromDB(card.color)}`, borderRadius: '5px' }"
+            :style="{
+              color: getTextColorFromDB(card.color),
+              border: `1px solid ${getTextColorFromDB(card.color)}`,
+              borderRadius: '5px',
+            }"
           />
         </q-card-actions>
       </q-card>
     </div>
 
-    <QDialogCreateCard @addCard="addCard" v-model="cardForm" v-model:dialog="dialog" />
+    <QDialogCreateCard
+      @addCard="addCard"
+      v-model="cardForm"
+      v-model:dialog="dialog"
+    />
+
+    <QDialogEditCard @editCard="editCard(selectedCard.id)" v-model="selectedCard" v-model:dialog="editDialog"/>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { getCards, insertCard, type Cards } from "../api/cards";
+import { onMounted } from "vue";
 import QDialogCreateCard from "../components/QDialogCreateCard.vue";
 import { getTextColorFromDB } from "../util/utils";
 import { useCardStore } from "../store/cardStore";
 import { useRouter } from "vue-router";
+import type { Cards } from "../api/cards";
+import useCards from "../composable/useCards";
+import QDialogEditCard from "../components/QDialogEditCard.vue";
 
-interface CardForm {
-  cardName: string;
-  cardColor: string;
-}
-
-const { setCardData } = useCardStore()
 const router = useRouter()
-const dialog = ref(false);
-const cardForm = ref<CardForm>({
-  cardName: "",
-  cardColor: "",
-});
-
-const cards = ref<Cards[] | []>([]);
+const { loadCards, addCard, editCard, selectedCard, selectCard, cardForm, cards, dialog, editDialog } = useCards()
+const { setCardData } = useCardStore();
 
 onMounted(async () => {
   await loadCards();
 });
 
-const loadCards = async () => {
-  try {
-    const data = await getCards();
-    cards.value = Array.isArray(data)
-      ? data
-      : typeof data === "string" && (data as string).trim()
-      ? JSON.parse(data)
-      : [];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-const addCard = async () => {
-  try {
-    const data = await insertCard({
-      name: cardForm.value.cardName,
-      color: cardForm.value.cardColor,
-    });
-    dialog.value = false;
-    await loadCards();
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 const goToEntriesPage = async (card: Cards) => {
-  await setCardData(card.id, card.name, card.color)
-  router.push(`/entries/${card.id}`)
-}
+  await setCardData(card.id, card.name, card.color);
+  router.push(`/entries/${card.id}`);
+};
 
 const dateFormatter = Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",

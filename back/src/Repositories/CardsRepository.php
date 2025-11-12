@@ -3,6 +3,7 @@
 namespace Mp\Controle\Repositories;
 
 use PDO;
+use RuntimeException;
 
 class CardsRepository {
     public function __construct(private PDO $pdo) {}
@@ -23,7 +24,19 @@ class CardsRepository {
             return $id;
         } catch (\Throwable $e) {
             $this->pdo->rollBack();
-            throw new \RuntimeException("Erro ao inserir: " . $e->getMessage(), 0, $e);
+            throw new RuntimeException("Erro ao inserir: " . $e->getMessage(), 0, $e);
+        }
+    }
+
+    public function update(int $id, string $name, string $color): array {
+        try {
+            $sql = "UPDATE cards SET name = :name, color = :color WHERE id = :id;";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([":name" => $name, ":color" => $color, ':id' => $id]);
+
+            return ['status' => 204, 'message' => 'Card atualizado com sucesso!'];
+        } catch (\Throwable $e) {
+            throw new RuntimeException("Erro ao atualizar card" . $e->getMessage());
         }
     }
 }

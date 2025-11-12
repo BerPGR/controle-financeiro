@@ -17,7 +17,7 @@ class CardsController
             $cards = $cardsService->getAllCards();
             Flight::json($cards, 200);
         } catch (\Throwable $e) {
-            Flight::json($e->getMessage(),500);
+            Flight::json($e->getMessage(), 500);
         }
     }
 
@@ -39,6 +39,21 @@ class CardsController
             Flight::json($createdCard, 201);
         } catch (\Throwable $e) {
             return Flight::json(['error' => 500, 'message' => "Erro ao inserir card: {$e->getMessage()}"], 500);
+        }
+    }
+
+    public function update(int $id)
+    {
+        try {
+            $req = Flight::request();
+            $payload = $req->data->getData();
+
+            $service = new CardsService($this->pdo);
+            $data = $service->updateCard($id, $payload);
+
+            Flight::json($data, 204);
+        } catch (\Throwable $e) {
+            return Flight::json($e->getMessage(), 500);
         }
     }
 }

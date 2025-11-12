@@ -20,3 +20,8 @@ export async function insertCard(payload: { name: string, color: string }) {
     const {data} = await http.post<Cards>('/api/cards', payload) 
     return data 
 }
+
+export async function updateCard(cardId: number, payload: {name: string, color: string}) {
+    const data = await http.put(`/api/cards/${cardId}`, payload)
+    return data
+}

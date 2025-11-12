@@ -18,4 +18,9 @@ class CardsService {
 
         return ['id' => $id, 'name' => $payload['name'], 'color'=> $payload['color']];
     }
+
+    public function updateCard(int $id, array $payload) {
+        $cardRepository = new CardsRepository($this->pdo);
+        return $cardRepository->update($id, $payload['name'], $payload['color']);
+    }
 }
