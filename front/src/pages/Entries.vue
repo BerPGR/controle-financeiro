@@ -11,7 +11,6 @@
       }"
       @click="replaceToHome"
     />
-    <!-- ✅ Só renderiza a linha quando card existir -->
     <div
       v-if="card"
       class="row q-col-gutter-md items-stretch q-mt-md"
@@ -21,6 +20,7 @@
         <q-card class="q-pa-md" :style="{ backgroundColor: card.color }">
           <q-item-section>
             <div class="text-h5 text-weight-bold">{{ card.name }}</div>
+            <div>Nº de registros: {{ entries.length }}</div>
           </q-item-section>
         </q-card>
       </div>
@@ -42,7 +42,6 @@
       </div>
     </div>
 
-    <!-- (Opcional) placeholder enquanto carrega -->
     <div v-else class="q-mt-md">
       <q-skeleton type="rect" height="120px" class="q-mb-md" />
       <q-skeleton type="rect" height="120px" class="q-mb-md" />
@@ -67,11 +66,13 @@
       title="Registros"
       :rows="entries"
       :columns="columns"
-      row-key="id"
+      row-key="kind"
       :pagination="initialPagination"
       no-data-label="Eu não achei nada para você"
       no-results-label="The filter didn't uncover any results"
       binary-state-sort
+      selection="single"
+      v-model:selected="selected"
     >
       <template v-slot:no-data="{ icon, message, filter }">
         <div class="full-width row flex-center q-gutter-sm">
@@ -79,6 +80,25 @@
           <span>Bem... {{ message }} </span>
           <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
         </div>
+      </template>
+      <template v-slot:top-right>
+        <q-btn
+          icon="delete"
+          color="negative"
+          round
+          flat
+          @click="deleteEntry(selected)"
+        />
+      </template>
+      <template v-slot:body-cell-amount="props">
+        <q-td :props="props">
+          <div>
+            <q-badge
+              :color="props.key === 'INVESTMENT' ? 'green' : 'red'"
+              :label="props.value"
+            />
+          </div>
+        </q-td>
       </template>
     </q-table>
     <QDialogCreateEntry
@@ -104,9 +124,10 @@ const route = useRoute();
 const router = useRouter();
 const { getCardDataFromStorage } = useCardStore();
 
+const selected = ref([{}]);
 const cardId = route.params.id as string;
 const card = ref<Omit<Cards, "created_at"> | null>();
-const { entries, dialog, form, loadEntries, addNewEntry } = useEntries()
+const { entries, dialog, form, loadEntries, addNewEntry, deleteEntry } = useEntries();
 
 const initialPagination = {
   sortBy: "desc",
@@ -116,17 +137,22 @@ const initialPagination = {
 };
 
 const columns = ref<QTableColumn[]>([
-  { name: "id", required: true, label: "ID", align: "left", field: "id" },
-  { name: "kind", label: "Tipo", align: "left", field: "kind" },
-  { name: "category", label: "Categoria", align: "left", field: "category" },
+  { name: "kind", label: "Tipo", align: "right", field: "kind" },
+  { name: "category", label: "Categoria", align: "right", field: "category" },
   {
     name: "description",
     label: "Descrição",
-    align: "left",
+    align: "right",
     field: "description",
   },
-  { name: "date", label: "Data", align: "left", field: "date" },
-  { name: "amount", label: "Total", align: "right", field: "amount", format: (val: number) => formattedValue(val) },
+  { name: "date", label: "Data", align: "right", field: "date" },
+  {
+    name: "amount",
+    label: "Total",
+    align: "right",
+    field: "amount",
+    format: (val: number) => formattedValue(val),
+  },
 ]);
 
 const totalExpenses = computed(() => {

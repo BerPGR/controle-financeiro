@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { type Entries, getEntriesFromCard, insertEntryInCard } from "../api/entries";
+import { type Entries, getEntriesFromCard, insertEntryInCard, deleteEntryById } from "../api/entries";
 import type { CreateEntryKind } from "../types/types";
 
 export default function useEntries() {
@@ -54,5 +54,14 @@ export default function useEntries() {
     }
   };
 
-  return { loadEntries, addNewEntry, entries, dialog, form };
+  const deleteEntry = async (entry: object[]) => {
+    try {
+      const convertEntry = entry[0] as Entries
+      await deleteEntryById(convertEntry.id)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return { loadEntries, addNewEntry, deleteEntry, entries, dialog, form };
 }

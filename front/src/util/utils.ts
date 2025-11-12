@@ -1,7 +1,9 @@
+import { useQuasar } from "quasar";
+
 const getTextColor = (hex: string) => {
   const c = hex.substring(1);
   const rgb = parseInt(c, 16);
-  
+
   const r = (rgb >> 16) & 0xff;
   const g = (rgb >> 8) & 0xff;
   const b = (rgb >> 0) & 0xff;
@@ -11,24 +13,27 @@ const getTextColor = (hex: string) => {
 };
 
 const rgbGetTextColor = (rgb: string) => {
-  const colors = rgb.match(/\d+/g)
-  
-  const r = colors![0]
-  const g = colors![1]
-  const b = colors![2]
+  const colors = rgb.match(/\d+/g);
 
-  const luminance = 0.299 * parseInt(r) + 0.587 * parseInt(g as string) + 0.114 * parseInt(b as string);
+  const r = colors![0];
+  const g = colors![1];
+  const b = colors![2];
+
+  const luminance =
+    0.299 * parseInt(r) +
+    0.587 * parseInt(g as string) +
+    0.114 * parseInt(b as string);
 
   return luminance > 186 ? "#000000" : "#FFFFFF";
-}
+};
 
 export const getTextColorFromDB = (textColor: string) => {
-  if (textColor.startsWith('rgb')) {
-    return rgbGetTextColor(textColor)
-  } else if (textColor.startsWith("#")){
-    return getTextColor(textColor)
+  if (textColor.startsWith("rgb")) {
+    return rgbGetTextColor(textColor);
+  } else if (textColor.startsWith("#")) {
+    return getTextColor(textColor);
   }
-}
+};
 
 const formatter = Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -37,4 +42,15 @@ const formatter = Intl.NumberFormat("pt-BR", {
 
 export const formattedValue = (value: number) => {
   return formatter.format(value);
+};
+
+export const notify = (message: string, color: string, icon: string) => {
+  const $q = useQuasar();
+  $q.notify({
+    icon,
+    color,
+    multiLine: true,
+    message,
+    position: "bottom-right",
+  });
 };

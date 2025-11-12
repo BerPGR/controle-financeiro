@@ -26,3 +26,11 @@ export async function insertEntryInCard(id: string, payload: {kind: string, amou
         throw('Erro ao inserir entry para esse card: ' + e)
     }
 }
+
+export async function deleteEntryById(id: number) {
+    try {
+        await http.delete<Entries>(`/api/entries/${id}`)
+    } catch (e) {
+        console.log(e);
+    }
+}
