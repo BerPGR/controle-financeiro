@@ -27,7 +27,7 @@ export default function useIncome() {
     const loadIncome = async () => {
         try {
             const data = await getIncomes()
-            monthlyIncome.value = typeof data === 'number' ? data : parseFloat(data)
+            monthlyIncome.value = typeof data === 'number' ? data : data !== null ? parseFloat(data) : 0 
         } catch (e) {
             console.log(e);
         }

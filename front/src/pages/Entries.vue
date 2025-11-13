@@ -66,7 +66,7 @@
       title="Registros"
       :rows="entries"
       :columns="columns"
-      row-key="kind"
+      row-key="id"
       :pagination="initialPagination"
       no-data-label="Eu não achei nada para você"
       no-results-label="The filter didn't uncover any results"
@@ -138,7 +138,6 @@ const initialPagination = {
 
 const columns = ref<QTableColumn[]>([
   { name: "kind", label: "Tipo", align: "right", field: "kind" },
-  { name: "category", label: "Categoria", align: "right", field: "category" },
   {
     name: "description",
     label: "Descrição",
