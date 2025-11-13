@@ -24,4 +24,8 @@ class CardsService {
     public function deleteCard(int $id) {
         return $this->repository->delete($id);
     }
+
+    public function summary() {
+        return $this->repository->summary();
+    }
 }

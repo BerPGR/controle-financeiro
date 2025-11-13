@@ -19,3 +19,5 @@ Flight::route('PUT /api/cards/@id', [CardsController::class, 'update']);
 Flight::route('DELETE /api/cards/@id', [CardsController::class, 'delete']);
 
 Flight::route('GET /api/entries/incomes', [EntriesController::class, 'allMonthlyIncomes']);
+
+Flight::route('GET /api/cards/summary', [CardsController::class, 'summary']);

@@ -61,4 +61,13 @@ class CardsController
             Flight::json(['status' => 500, 'message' => 'Erro ao deletar card: ' . $e->getMessage()], 500);
         }
     }
+
+    public function summary() {
+        try {
+            $data = $this->service->summary();
+            Flight::json($data, 200);
+        } catch (\Throwable $e) {
+            Flight::json('Não foi possível buscar o sumário dos dados: ' . $e->getMessage(), 500);
+        }
+    }
 }
