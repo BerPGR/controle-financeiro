@@ -4,6 +4,7 @@ import {
   getEntriesFromCard,
   insertEntryInCard,
   deleteEntryById,
+  getIncomeTotal
 } from "../api/entries";
 import type { CreateEntryKind } from "../types/types";
 import { notify } from "../util/utils";
@@ -11,7 +12,7 @@ import { notify } from "../util/utils";
 export default function useEntries() {
   const entries = ref<Entries[] | []>([]);
   const dialog = ref<boolean>(false);
-
+  const monthlyIncome = ref(0.0);
   interface EntryForm {
     kind: CreateEntryKind;
     description: string;
@@ -74,5 +75,23 @@ export default function useEntries() {
     }
   };
 
-  return { loadEntries, addNewEntry, deleteEntry, entries, dialog, form };
+  const loadIncome = async () => {
+    try {
+      const data = await getIncomeTotal()
+      monthlyIncome.value = typeof data.total === 'number' ? data.total : data.total !== null ? Number(data.total) : 0 
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  return {
+    loadEntries,
+    addNewEntry,
+    deleteEntry,
+    loadIncome,
+    entries,
+    dialog,
+    monthlyIncome,
+    form,
+  };
 }

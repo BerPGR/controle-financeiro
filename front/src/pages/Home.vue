@@ -36,11 +36,10 @@
         <div>
           <q-card class="bg-primary text-white">
             <q-card-section>
-              <div class="row items-center justify-between">
-                <div class="text-h6 text-weight-bold">Total recebido neste mês</div>
-                <q-btn round flat icon="add" @click="incomeDialog = true"/>
+              <div class="text-h6 text-weight-bold">
+                Total recebido neste mês
               </div>
-              <div class="text-body1">{{  formattedValue(monthlyIncome) }}</div>
+              <div class="text-body1">{{ formattedValue(monthlyIncome) }}</div>
             </q-card-section>
           </q-card>
         </div>
@@ -67,13 +66,23 @@
                 transition-hide="jump-up"
               >
                 <q-list>
-                  <q-item clickable v-ripple v-close-popup @click="selectCard(card.id, card.name, card.color)">
+                  <q-item
+                    clickable
+                    v-ripple
+                    v-close-popup
+                    @click="selectCard(card.id, card.name, card.color)"
+                  >
                     <q-item-section>Editar</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="edit" />
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-ripple v-close-popup @click="openDeleteDialog(card.id)">
+                  <q-item
+                    clickable
+                    v-ripple
+                    v-close-popup
+                    @click="openDeleteDialog(card.id)"
+                  >
                     <q-item-section>Apagar card</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="delete" />
@@ -109,11 +118,17 @@
       v-model:dialog="dialog"
     />
 
-    <QDialogEditCard @editCard="editCard(selectedCard.id)" v-model="selectedCard" v-model:dialog="editDialog"/>
+    <QDialogEditCard
+      @editCard="editCard(selectedCard.id)"
+      v-model="selectedCard"
+      v-model:dialog="editDialog"
+    />
 
-    <QDialogDeleteCard @deleteCard="deleteCard(idCardDelete)" :id="idCardDelete" v-model:dialog="deleteDialog"/>
-
-    <QDialogInsertIncome @insertNewIncome="newIncome" v-model:dialog="incomeDialog" v-model="incomeForm"/>
+    <QDialogDeleteCard
+      @deleteCard="deleteCard(idCardDelete)"
+      :id="idCardDelete"
+      v-model:dialog="deleteDialog"
+    />
   </q-page>
 </template>
 
@@ -127,15 +142,26 @@ import type { Cards } from "../api/cards";
 import useCards from "../composable/useCards";
 import QDialogEditCard from "../components/Dialog/QDialogEditCard.vue";
 import QDialogDeleteCard from "../components/Dialog/QDialogDeleteCard.vue";
-import useIncome from "../composable/useIncome";
-import QDialogInsertIncome from "../components/Dialog/QDialogInsertIncome.vue";
+import useEntries from "../composable/useEntries";
 
-const router = useRouter()
-const { loadCards, addCard, editCard, selectCard, deleteCard, selectedCard, cardForm, cards, dialog, editDialog, deleteDialog } = useCards()
-const {incomeForm, loadIncome, monthlyIncome, newIncome, incomeDialog} = useIncome()
+const router = useRouter();
+const {
+  loadCards,
+  addCard,
+  editCard,
+  selectCard,
+  deleteCard,
+  selectedCard,
+  cardForm,
+  cards,
+  dialog,
+  editDialog,
+  deleteDialog,
+} = useCards();
+const { loadIncome, monthlyIncome } = useEntries();
 const { setCardData } = useCardStore();
 
-const idCardDelete = ref("")
+const idCardDelete = ref("");
 
 onMounted(async () => {
   await loadCards();
@@ -158,7 +184,7 @@ const formatDate = (date: Date | string) => {
 };
 
 const openDeleteDialog = (id: string) => {
-  idCardDelete.value = id
-  deleteDialog.value = true
-}
+  idCardDelete.value = id;
+  deleteDialog.value = true;
+};
 </script>

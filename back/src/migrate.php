@@ -22,14 +22,6 @@ CREATE TABLE IF NOT EXISTS entries (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_entries_card FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE 
 );
-
-CREATE TABLE IF NOT EXISTS income (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    value DECIMAL(12, 2) NOT NULL,
-    date DATE NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
 ";
 
 // Como o Flight::register('db', PDO::class, ...) ainda não foi injetado (está no before('start')),

@@ -93,8 +93,8 @@
       <template v-slot:body-cell-amount="props">
         <q-td :props="props">
           <div>
-            <q-badge
-              :color="props.key === 'INVESTMENT' ? 'green' : 'red'"
+            <q-badge @click="()  => console.log(props)"
+              :color="props.row.kind === 'INVESTMENT' ? 'green' : 'red'"
               :label="props.value"
             />
           </div>
@@ -157,13 +157,13 @@ const columns = ref<QTableColumn[]>([
 const totalExpenses = computed(() => {
   return entries.value
     .filter((e) => e.kind === "EXPENSE")
-    .reduce((acc, item) => acc + item.amount, 0);
+    .reduce((acc, item) => acc + Number(item.amount), 0);
 });
 
 const totalEarnings = computed(() => {
   return entries.value
     .filter((e) => e.kind === "INVESTMENT")
-    .reduce((acc, item) => acc + item.amount, 0);
+    .reduce((acc, item) => acc + Number(item.amount), 0);
 });
 
 onMounted(async () => {

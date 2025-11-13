@@ -47,4 +47,13 @@ class EntriesController {
             Flight::json(['status' => 500, 'message' => 'Erro ao deletar registro: ' . $e->getMessage()], 500);
         }
     }
+
+    public function allMonthlyIncomes() {
+        try {
+            $data = $this->service->totalMonthlyIncome();
+            Flight::json($data, 200);
+        } catch (\throwable $e) {
+            Flight::json(['status' => 500, 'message' => 'Erro ao buscar rendimentos mensais: ' . $e->getMessage()]);
+        }
+    }
 }

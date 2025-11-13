@@ -34,3 +34,12 @@ export async function deleteEntryById(id: number) {
         console.log(e);
     }
 }
+
+export async function getIncomeTotal() {
+    try {
+        const { data } = await http.get('/api/entries/incomes')
+        return data
+    } catch (e) {
+        console.log(e);
+    }
+}

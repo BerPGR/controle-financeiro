@@ -18,4 +18,8 @@ class EntriesService {
     public function deleteEntry($id) {
         return $this->repository->deleteEntryById($id);
     }
+
+    public function totalMonthlyIncome() {
+        return $this->repository->getMonhlyIncome();
+    }
 }

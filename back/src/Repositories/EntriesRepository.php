@@ -42,22 +42,30 @@ class EntriesRepository
         }
     }
 
-    public function deleteEntryById($id) {
+    public function deleteEntryById($id)
+    {
         $this->pdo->beginTransaction();
         try {
             $sql = "DELETE FROM entries WHERE id = :id";
             $stmt = $this->pdo->prepare($sql);
             $ok = $stmt->execute([':id' => $id]);
-    
+
             if ($ok) {
                 $this->pdo->commit();
             }
 
             return ['status' => 204, 'message' => 'Registro deletado com sucesso'];
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->pdo->rollBack();
-            throw new \RuntimeException('Falha ao deletar registro: '. $e->getMessage());
+            throw new \RuntimeException('Falha ao deletar registro: ' . $e->getMessage());
         }
+    }
+
+    public function getMonhlyIncome()
+    {
+        $sql = "SELECT SUM(amount) as total FROM entries WHERE kind = 'INVESTMENT' AND date BETWEEN DATE_FORMAT(CURDATE(), 'Y%-%m-01') AND LAST_DAY(CURDATE());";
+        $stmt = $this->pdo->query($sql);
+        $data = $stmt->fetch();
+        return $data;
     }
 }
