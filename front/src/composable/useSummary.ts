@@ -12,6 +12,7 @@ export default function useSummary() {
   }
 
   const pieChartTotalOptions = ref({
+    title: "",
     chart: {
       type: "pie",
       panning: {
@@ -19,9 +20,6 @@ export default function useSummary() {
         type: "xy",
       },
       panKey: "shift",
-    },
-    title: {
-      text: "Rendimento x Despesa Total",
     },
     tooltip: {
       valuePrefix: "R$",
@@ -76,16 +74,15 @@ export default function useSummary() {
   });
 
   const pieChartTotalExpenseCardsOptions = ref({
+    title: "",
     chart: {
+      title: "",
       type: "pie",
       panning: {
         enabled: true,
         type: "xy",
       },
       panKey: "shift",
-    },
-    title: {
-      text: "Despesa total por card",
     },
     tooltip: {
       valuePrefix: "R$",
@@ -143,7 +140,7 @@ export default function useSummary() {
       type: "column",
     },
     title: {
-      text: "Investimentos x Despesas por Card",
+      text: "",
     },
     xAxis: {
       categories: [],
@@ -169,7 +166,7 @@ export default function useSummary() {
 
   const lineMonthlyExpenseChart = ref<Options>({
     title: {
-      text: "Despesa Mensal por Card",
+      text: "",
     },
 
     yAxis: {

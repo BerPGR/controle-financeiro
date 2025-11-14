@@ -1,6 +1,8 @@
 <?php
 
 $sql = "
+CREATE DATABASE IF NOT EXISTS financias;
+
 USE financias;
 
 CREATE TABLE IF NOT EXISTS cards (

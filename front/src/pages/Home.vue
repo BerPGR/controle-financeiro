@@ -47,7 +47,22 @@
     </div>
 
     <div class="text-h3 text-weight-bold q-mt-xl">Seus Cards</div>
-    <div class="row wrap q-gutter-md items-center q-mt-xs">
+    <div v-if="cards.length === 0" class="q-mt-xl row">
+      <q-card class="col-8 q-mx-auto">
+        <q-card-section class="row items-center q-gutter-md">
+          <q-icon name="warning" size="xs" />
+          <div class="text-h5 text-weight-bold">Ops!</div>
+        </q-card-section>
+        <q-separator />
+        <q-card-section>
+          <div class="q-pa-md column items-center">
+            <div class="text-center text-h6">Parece que não há cards criados por você. Vamos criar?</div>
+            <q-btn color="primary" label="Adicionar card" icon="add" class="q-mt-md" @click="dialog = true"/>
+          </div>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div v-else class="row wrap q-gutter-md items-center q-mt-xs">
       <q-card
         v-for="card in cards"
         class="col-12 col-md-3 shadow-4"
