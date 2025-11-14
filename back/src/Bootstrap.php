@@ -24,6 +24,13 @@ Flight::set('config', [
     ]
 ]);
 
+Flight::set('jwt.config', [
+    'secret' => $_ENV['JWT_SECRET'],
+    'iss' => $_ENV['JWT_ISS'],
+    'aud' => $_END['JWT_AUD'],
+    'ttl' => (int)$_env['JWT_AT_TTL']
+]);
+
 $config = Flight::get('config');
 Flight::register('db', PDO::class, [
     "{$config['db']['driver']}:host={$config['db']['host']};port={$config['db']['port']};dbname={$config['db']['database']}",
