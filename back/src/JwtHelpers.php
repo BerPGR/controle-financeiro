@@ -2,7 +2,6 @@
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Flight;
 
 function jwt_issue_token(array $user): string {
     $config = Flight::get('jwt.config');

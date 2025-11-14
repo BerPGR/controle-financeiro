@@ -4,7 +4,7 @@ use Dotenv\Dotenv;
 use Mp\Controle\utils\CorsUtil;
 use Mp\Controle\DInjection;
 
-$dotend = Dotenv::createImmutable(__DIR__);
+$dotend = Dotenv::createImmutable(__DIR__ . "/../");
 $dotend->safeLoad();
 
 $CorsUtil = new CorsUtil();
@@ -27,8 +27,8 @@ Flight::set('config', [
 Flight::set('jwt.config', [
     'secret' => $_ENV['JWT_SECRET'],
     'iss' => $_ENV['JWT_ISS'],
-    'aud' => $_END['JWT_AUD'],
-    'ttl' => (int)$_env['JWT_AT_TTL']
+    'aud' => $_ENV['JWT_AUD'],
+    'ttl' => (int)$_ENV['JWT_AT_TTL']
 ]);
 
 $config = Flight::get('config');

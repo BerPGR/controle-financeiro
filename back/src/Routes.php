@@ -24,4 +24,4 @@ Flight::group('/api', function () {
     Flight::route('GET /entries/incomes', [EntriesController::class, 'allMonthlyIncomes']);
     
     Flight::route('GET /cards/summary', [CardsController::class, 'summary']);
-}, [new AuthMiddleware($app)]);
+});
