@@ -21,7 +21,7 @@ const router = createRouter({
                 {
             path: '/settings',
             component: Settings
-        }
+        },
     ],
     history: createWebHistory(import.meta.env.BASE_URL)
 })

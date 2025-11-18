@@ -10,7 +10,7 @@ function jwt_issue_token(array $user): string {
     $exp = $now + $config['ttl'];
 
     $payload = [
-                'iss'   => $config['iss'],
+        'iss'   => $config['iss'],
         'aud'   => $config['aud'],
         'iat'   => $now,
         'nbf'   => $now,
