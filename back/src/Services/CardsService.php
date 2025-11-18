@@ -12,7 +12,7 @@ class CardsService {
     }
 
     public function insertCard(array $payload) {
-        $id = $this->repository->insert($payload['name'],  $payload['color']);
+        $id = $this->repository->insert($payload['name'],  $payload['color'], $payload['user_id']);
 
         return ['id' => $id, 'name' => $payload['name'], 'color'=> $payload['color']];
     }

@@ -1,7 +1,9 @@
 import { ref } from "vue";
 import { getCards, insertCard, updateCard, deleteCardById, type Cards } from "../api/cards";
+import { useAuthStore } from "../store/useAuth";
 
 export default function useCards() {
+  const { user } = useAuthStore()
   const cards = ref<Cards[] | []>([]);
   const editDialog = ref<boolean>(false)
   const deleteDialog = ref<boolean>(false)
@@ -48,6 +50,7 @@ export default function useCards() {
       const data = await insertCard({
         name: cardForm.value.cardName,
         color: cardForm.value.cardColor,
+        user_id: user.id
       });
       dialog.value = false;
       await loadCards();

@@ -15,12 +15,12 @@ class CardsRepository
         return $stmt->fetchAll();
     }
 
-    public function insert(string $name, ?string $color): int
+    public function insert(string $name, ?string $color, string $user_id): int
     {
         $this->pdo->beginTransaction();
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO cards (name, color) VALUES (:name, :color)");
-            $stmt->execute([':name' => $name, ':color' => $color]);
+            $stmt = $this->pdo->prepare("INSERT INTO cards (user_id, name, color) VALUES (:user_id, :name, :color)");
+            $stmt->execute([':user_id' => $user_id, ':name' => $name, ':color' => $color]);
 
             $id = (int)$this->pdo->lastInsertId();
             $this->pdo->commit();

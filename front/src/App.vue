@@ -57,12 +57,18 @@ const menuList = [
     icon: "dashboard",
     label: "Relatório",
     to: '/dashboard',
-    separator: true,
+    separator: false,
   },
   {
     icon: "settings",
     label: "Configurações",
     to: '/settings',
+    separator: true,
+  },
+    {
+    icon: "login",
+    label: "Entrar / Registrar",
+    to: '/auth',
     separator: false,
   },
 ];

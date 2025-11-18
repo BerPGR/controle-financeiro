@@ -4,8 +4,10 @@ namespace Mp\Controle;
 
 use Flight;
 use flight\Container;
+use Mp\Controle\Repositories\AuthRepository;
 use Mp\Controle\Repositories\CardsRepository;
 use Mp\Controle\Repositories\EntriesRepository;
+use Mp\Controle\Services\AuthService;
 use Mp\Controle\Services\CardsService;
 use Mp\Controle\Services\EntriesService;
 use PDO;
@@ -30,6 +32,8 @@ class DInjection
         $container->set(EntriesRepository::class, EntriesRepository::class);
         $container->set(CardsService::class, CardsService::class);
         $container->set(CardsRepository::class, CardsRepository::class);
+        $container->set(AuthService::class, AuthService::class);
+        $container->set(AuthRepository::class, AuthRepository::class);
 
         Flight::registerContainerHandler([$container, 'get']);
     }

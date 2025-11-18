@@ -16,7 +16,7 @@ export async function getCards(): Promise<Cards[]> {
     } 
 } 
     
-export async function insertCard(payload: { name: string, color: string }) { 
+export async function insertCard(payload: { name: string, color: string, user_id: string }) { 
     const { data } = await http.post<Cards>('/api/cards', payload) 
     return data 
 }

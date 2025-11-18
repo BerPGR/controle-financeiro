@@ -17,7 +17,6 @@ function jwt_issue_token(array $user): string {
         'exp'   => $exp,
         'sub'   => (string)$user['id'],
         'email' => $user['email'],
-        'role'  => $user['role'],
     ];
 
     return JWT::encode($payload, $config['secret'], 'HS256');
