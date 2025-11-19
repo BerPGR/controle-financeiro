@@ -9,10 +9,10 @@ class CardsController
 {
     public function __construct(private CardsService $service) {}
 
-    public function index()
+    public function index(int $id)
     {
         try {
-            $cards = $this->service->getAllCards();
+            $cards = $this->service->getAllCards($id);
             Flight::json($cards, 200);
         } catch (\Throwable $e) {
             Flight::json($e->getMessage(), 500);

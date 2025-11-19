@@ -7,9 +7,9 @@ export interface Cards {
     created_at: Date 
 } 
 
-export async function getCards(): Promise<Cards[]> { 
+export async function getCards(user_id: string | number): Promise<Cards[]> { 
     try { 
-        const { data } = await http.get<Cards[]>('/api/cards') 
+        const { data } = await http.get<Cards[]>(`api/cards/${user_id}`) 
         return data 
     } catch (e) { 
         throw('Deu ruim' + e) 

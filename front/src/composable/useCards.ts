@@ -34,7 +34,7 @@ export default function useCards() {
 
   const loadCards = async () => {
     try {
-      const data = await getCards();
+      const data = await getCards(user.id);
       cards.value = Array.isArray(data)
         ? data
         : typeof data === "string" && (data as string).trim()

@@ -9,9 +9,11 @@ class CardsRepository
 {
     public function __construct(private PDO $pdo) {}
 
-    public function all(): array
+    public function all(int $id): array
     {
-        $stmt = $this->pdo->query("SELECT id, name, color, created_at FROM cards ORDER BY created_at DESC");
+        $sql = "SELECT id, name, color, created_at FROM cards WHERE user_id = :user_id ORDER BY created_at DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':user_id' => $id]);
         return $stmt->fetchAll();
     }
 

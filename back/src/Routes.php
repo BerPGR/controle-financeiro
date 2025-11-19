@@ -11,7 +11,7 @@ Flight::group('/api', function () {
     Flight::route('POST /auth/register', [AuthController::class, 'register']);
     Flight::route('POST /auth/login', [AuthController::class, 'login']);
     
-    Flight::route('GET /cards', [CardsController::class, 'index']);
+    Flight::route('GET /cards/@id', [CardsController::class, 'index']);
 
     Flight::route('POST /cards', [CardsController::class, 'insert']);
 

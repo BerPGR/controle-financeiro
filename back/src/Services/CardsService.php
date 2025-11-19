@@ -7,8 +7,8 @@ use PDO;
 class CardsService {
     public function __construct(private CardsRepository $repository){}
 
-    public function getAllCards() {
-        return $this->repository->all();
+    public function getAllCards(int $user_id) {
+        return $this->repository->all($user_id);
     }
 
     public function insertCard(array $payload) {
